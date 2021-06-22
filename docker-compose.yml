@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  master:
+    image: c2io/locust
+    ports:
+      - "8089:8089"
+    environment: 
+      - LOCUST_MODE=master
+      - LOCUST_LOCUSTFILE_PATH=/app/locustfile.py
+
+  worker:
+    image: c2io/locust
+    environment:
+      - LOCUST_MODE=worker
+      - LOCUST_MASTER=master
+      - LOCUST_LOCUSTFILE_PATH=/app/locustfile.py

@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "locust-example"
+version = "0.1.0"
+description = ""
+authors = ["c2io <c2io@outlook.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+locust = "^1.5.3"
+loguru = "^0.5.3"
+arrow = "^1.1.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+black = "^21.6b0"
+flake8 = "^3.9.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
