@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: locust-master
+  labels:
+    name: locust-master
+spec:
+  type: NodePort
+  selector:
+    name: locust
+    role: master
+  ports:
+    - port: 8089
+      protocol: TCP
+      name: master-web
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: locust-master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: locust
+      role: master
+  template:
+    metadata:
+      labels:
+        name: locust
+        role: master
+    spec:
+      volumes:
+        - name: locust-volume
+          configMap:
+            name: locust-configmap
+      containers:
+        - name: locust
+          image: c2io/locust
+          env:
+            - name: LOCUST_MODE
+              value: master
+            - name: LOCUST_LOCUSTFILE_PATH
+              value: "/app/locustfile.py"
+            - name: LOCUST_TARGET_HOST
+              value: "https://example.com"
+          volumeMounts:
+            - name: locust-volume
+              mountPath: /app
+          ports:
+            - containerPort: 8089
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

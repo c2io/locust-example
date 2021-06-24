@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: locust-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: locust
+      role: worker
+  template:
+    metadata:
+      labels:
+        name: locust
+        role: worker
+    spec:
+      volumes:
+        - name: locust-volume
+          configMap:
+            name: locust-configmap
+      containers:
+        - name: locust
+          image: c2io/locust
+          env:
+            - name: LOCUST_MODE
+              value: worker
+            - name: LOCUST_MASTER
+              value: locust-master
+            - name: LOCUST_LOCUSTFILE_PATH
+              value: "/app/locustfile.py"
+            - name: LOCUST_TARGET_HOST
+              value: "https://example.com"
+          volumeMounts:
+            - name: locust-volume
+              mountPath: /app
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "1024Mi"
+              cpu: "1000m"
